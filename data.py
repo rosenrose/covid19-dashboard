@@ -26,19 +26,26 @@ def make_df(country=None):
     return final_df
 
 
-daily_dataframe = pd.read_csv("data/daily_report_2021-03-06.csv")
+# daily_dataframe = pd.read_csv("data/daily_report_2021-03-06.csv")
+daily_dataframe = pd.read_csv("data/daily_report_2022-04-19.csv")
 
 totals_df = daily_dataframe[["Confirmed", "Deaths", "Recovered"]].sum()
 totals_df = totals_df.reset_index(name="count").rename(columns={"index": "condition"})
 
 countries_df = daily_dataframe[["Country_Region", "Confirmed", "Deaths", "Recovered"]]
-countries_df = countries_df.groupby("Country_Region").sum()
+countries_df = (
+    countries_df.groupby("Country_Region")
+    .sum()
+    .sort_values(by="Confirmed", ascending=False)
+)
 countries_df = countries_df.reset_index()
 
 conditions = ["confirmed", "deaths", "recovered"]
 
 global_df = make_df()
-print(totals_df)
-print(countries_df)
-print(global_df)
-print(make_df("Korea, South"))
+
+if __name__ == "__main__":
+    print(totals_df)
+    print(countries_df)
+    print(global_df)
+    print(make_df("Korea, South"))
