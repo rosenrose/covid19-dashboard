@@ -13,6 +13,24 @@ stylesheets = [
 
 app = Dash(__name__, external_stylesheets=stylesheets)
 
+covid_map = px.scatter_geo(
+    countries_df,
+    locations="Country_Region",
+    locationmode="country names",
+    color="Confirmed",
+    hover_name="Country_Region",
+    hover_data={
+        "Confirmed": ":,",
+        "Deaths": ":,",
+        "Recovered": ":,",
+        "Country_Region": False,
+    },
+    size="Confirmed",
+    size_max=40,
+    projection="natural earth",
+    template="plotly_dark",
+)
+
 app.layout = html.Div(
     style={
         "minHeight": "100vh",
@@ -36,15 +54,12 @@ app.layout = html.Div(
         html.Div(
             style={"display": "flex"},
             children=[
-                html.Div(),
-                html.Div(style={"width": "50%"}, children=[make_table(countries_df)]),
+                dcc.Graph(figure=covid_map),
+                html.Div(children=[make_table(countries_df)]),
             ],
         ),
     ],
 )
-
-map_figure = px.scatter_geo(countries_df, projection="natural earth")
-map_figure.show()
 
 if __name__ == "__main__":
     app.run_server(debug=True)
