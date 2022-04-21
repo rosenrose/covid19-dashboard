@@ -1,4 +1,5 @@
 from dash import Dash, html, dcc
+from dash.dependencies import Input, Output
 import plotly.express as px
 import pandas as pd
 from data import totals_df, countries_df, global_df
@@ -84,11 +85,23 @@ app.layout = html.Div(
                 "gap": "2rem",
             },
             children=[
-                html.Div(dcc.Graph(figure=bar_chart), style={"gridColumn": "span 3"})
+                html.Div(dcc.Graph(figure=bar_chart), style={"gridColumn": "span 3"}),
+                html.Div(
+                    children=[
+                        dcc.Input(placeholder="name?", id="hello-input"),
+                        html.H2("Hello Anonymous", id="hello-output"),
+                    ]
+                ),
             ],
         ),
     ],
 )
+
+
+@app.callback(Output("hello-output", "children"), [Input("hello-input", "value")])
+def update_hello(value):
+    return f"Hello {value if value else 'there'}"
+
 
 if __name__ == "__main__":
     app.run_server(debug=True)
