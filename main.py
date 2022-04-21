@@ -80,6 +80,7 @@ app.layout = html.Div(
                 "display": "grid",
                 "gridTemplateColumns": "60% 40%",
                 "gap": "2rem",
+                "marginBottom": "2rem",
             },
             children=[
                 html.Div(dcc.Graph(figure=covid_map)),
@@ -105,6 +106,11 @@ app.layout = html.Div(
                                 for country in dropdown_options
                             ],
                             value="global",
+                            style={
+                                "width": "20rem",
+                                "margin": "0 auto",
+                                "color": "#333",
+                            },
                         ),
                         dcc.Graph(id="time-series-graph"),
                     ],
@@ -142,5 +148,7 @@ def update_hello(value):
     return line_chart
 
 
-if __name__ == "__main__":
-    app.run_server(debug=True)
+# if __name__ == "__main__":
+#     app.run_server(debug=True)
+app.title = "COVID-19 Dashboard"
+server = app.server
