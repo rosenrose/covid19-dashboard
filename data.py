@@ -1,10 +1,10 @@
 import pandas as pd
 
 
-def make_condition_df(condition, country=None):
+def make_condition_df(condition, country="global"):
     df = pd.read_csv(f"data/time_series_{condition}.csv")
 
-    if country:
+    if country != "global":
         df = df.loc[df["Country/Region"] == country]
 
     df = df.drop(columns=["Province/State", "Country/Region", "Lat", "Long"]).sum()
@@ -13,7 +13,7 @@ def make_condition_df(condition, country=None):
     return df
 
 
-def make_df(country=None):
+def make_time_series_df(country="global"):
     final_df = None
     for condition in conditions:
         condition_df = make_condition_df(condition, country)
@@ -43,13 +43,14 @@ countries_df = countries_df.reset_index()
 dropdown_options = countries_df.sort_values("Country_Region").reset_index()[
     "Country_Region"
 ]
+dropdown_options = ["global", *dropdown_options]
 
 conditions = ["confirmed", "deaths", "recovered"]
 
-global_df = make_df()
+global_df = make_time_series_df()
 
 if __name__ == "__main__":
     print(totals_df)
     print(countries_df)
     print(global_df)
-    print(make_df("Korea, South"))
+    print(make_time_series_df("Korea, South"))

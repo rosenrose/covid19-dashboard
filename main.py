@@ -1,8 +1,15 @@
+from optparse import Values
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
 import plotly.express as px
 import pandas as pd
-from data import totals_df, countries_df, global_df, dropdown_options
+from data import (
+    totals_df,
+    countries_df,
+    global_df,
+    dropdown_options,
+    make_time_series_df,
+)
 from builder import make_table
 
 # print(countries_df.values, dropdown_options)
@@ -35,6 +42,8 @@ covid_map = px.scatter_geo(
 )
 covid_map.update_layout(margin={"l": 0, "r": 0, "t": 50, "b": 0})
 
+condition_colors = ["#e74c3c", "#8e44ad", "#27ae60"]
+
 bar_chart = px.bar(
     totals_df,
     title="Total Global Cases",
@@ -45,7 +54,26 @@ bar_chart = px.bar(
     template="plotly_dark",
 )
 # bar_chart.update_layout(xaxis={"title": "Condition"}, yaxis={"title": "Cases"})
-bar_chart.update_traces(marker_color=["#e74c3c", "#8e44ad", "#27ae60"])
+bar_chart.update_traces(marker_color=condition_colors)
+
+line_chart = px.line(
+    global_df,
+    x="date",
+    y=global_df.columns[1:],
+    labels={
+        "date": "Date",
+        "value": "Cases",
+        "variable": "Condition",
+    },
+    hover_data={
+        "value": ":,",
+        "variable": False,
+    },
+    template="plotly_dark",
+)
+line_chart.update_xaxes(rangeslider_visible=True)
+for i, data in enumerate(line_chart["data"]):
+    data["line"]["color"] = condition_colors[i]
 
 app.layout = html.Div(
     style={
@@ -85,8 +113,9 @@ app.layout = html.Div(
                 "gap": "2rem",
             },
             children=[
-                html.Div(dcc.Graph(figure=bar_chart), style={"gridColumn": "span 3"}),
+                html.Div(dcc.Graph(figure=bar_chart)),
                 html.Div(
+                    style={"gridColumn": "span 3"},
                     children=[
                         # dcc.Input(placeholder="name?", id="hello-input"),
                         # html.H2("Hello Anonymous", id="hello-output"),
@@ -97,8 +126,8 @@ app.layout = html.Div(
                                 for country in dropdown_options
                             ],
                         ),
-                        html.H1("Hello Anonymous", id="country-output"),
-                    ]
+                        dcc.Graph(figure=line_chart, id="time-series-graph"),
+                    ],
                 ),
             ],
         ),
@@ -107,11 +136,9 @@ app.layout = html.Div(
 # @app.callback(Output("hello-output", "children"), [Input("hello-input", "value")])
 # def update_hello(value):
 #     return f"Hello {value if value else 'there'}"
-
-
-@app.callback(Output("country-output", "children"), [Input("country", "value")])
-def update_hello(value):
-    return value
+# @app.callback(Output("time-series-graph", "figure"), [Input("country", "value")])
+# def update_hello(value):
+#     return make_time_series_df(value)
 
 
 if __name__ == "__main__":
