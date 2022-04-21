@@ -15,9 +15,11 @@ app = Dash(__name__, external_stylesheets=stylesheets)
 
 covid_map = px.scatter_geo(
     countries_df,
+    title="Confirmed By Country",
     locations="Country_Region",
     locationmode="country names",
     color="Confirmed",
+    color_continuous_scale=px.colors.sequential.Oryel,
     hover_name="Country_Region",
     hover_data={
         "Confirmed": ":,",
@@ -30,6 +32,17 @@ covid_map = px.scatter_geo(
     projection="natural earth",
     template="plotly_dark",
 )
+covid_map.update_layout(margin={"l": 0, "r": 0, "t": 50, "b": 0})
+
+bar_chart = px.bar(
+    totals_df,
+    title="Total Global Cases",
+    x="condition",
+    y="count",
+    hover_data={"count": ":,", "condition": False},
+    template="plotly_dark",
+)
+bar_chart.update_layout(xaxis={"title": "Condition"}, yaxis={"title": "Cases"})
 
 app.layout = html.Div(
     style={
@@ -55,8 +68,11 @@ app.layout = html.Div(
             style={"display": "flex"},
             children=[
                 dcc.Graph(figure=covid_map),
-                html.Div(children=[make_table(countries_df)]),
+                make_table(countries_df),
             ],
+        ),
+        html.Div(
+            children=[dcc.Graph(figure=bar_chart)],
         ),
     ],
 )
