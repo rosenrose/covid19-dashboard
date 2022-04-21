@@ -2,10 +2,10 @@ from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
 import plotly.express as px
 import pandas as pd
-from data import totals_df, countries_df, global_df
+from data import totals_df, countries_df, global_df, dropdown_options
 from builder import make_table
 
-# print(countries_df.values)
+# print(countries_df.values, dropdown_options)
 
 stylesheets = [
     "https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css",
@@ -88,19 +88,30 @@ app.layout = html.Div(
                 html.Div(dcc.Graph(figure=bar_chart), style={"gridColumn": "span 3"}),
                 html.Div(
                     children=[
-                        dcc.Input(placeholder="name?", id="hello-input"),
-                        html.H2("Hello Anonymous", id="hello-output"),
+                        # dcc.Input(placeholder="name?", id="hello-input"),
+                        # html.H2("Hello Anonymous", id="hello-output"),
+                        dcc.Dropdown(
+                            id="country",
+                            options=[
+                                {"label": country, "value": country}
+                                for country in dropdown_options
+                            ],
+                        ),
+                        html.H1("Hello Anonymous", id="country-output"),
                     ]
                 ),
             ],
         ),
     ],
 )
+# @app.callback(Output("hello-output", "children"), [Input("hello-input", "value")])
+# def update_hello(value):
+#     return f"Hello {value if value else 'there'}"
 
 
-@app.callback(Output("hello-output", "children"), [Input("hello-input", "value")])
+@app.callback(Output("country-output", "children"), [Input("country", "value")])
 def update_hello(value):
-    return f"Hello {value if value else 'there'}"
+    return value
 
 
 if __name__ == "__main__":
