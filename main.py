@@ -40,9 +40,11 @@ bar_chart = px.bar(
     x="condition",
     y="count",
     hover_data={"count": ":,", "condition": False},
+    labels={"condition": "Condition", "count": "Cases"},
     template="plotly_dark",
 )
-bar_chart.update_layout(xaxis={"title": "Condition"}, yaxis={"title": "Cases"})
+# bar_chart.update_layout(xaxis={"title": "Condition"}, yaxis={"title": "Cases"})
+bar_chart.update_traces(marker_color=["#e74c3c", "#8e44ad", "#27ae60"])
 
 app.layout = html.Div(
     style={
@@ -65,14 +67,25 @@ app.layout = html.Div(
             ],
         ),
         html.Div(
-            style={"display": "flex"},
+            style={
+                "display": "grid",
+                "gridTemplateColumns": "repeat(8, 1fr)",
+                "gap": "2rem",
+            },
             children=[
-                dcc.Graph(figure=covid_map),
-                make_table(countries_df),
+                html.Div(dcc.Graph(figure=covid_map), style={"gridColumn": "span 5"}),
+                html.Div(make_table(countries_df), style={"gridColumn": "span 3"}),
             ],
         ),
         html.Div(
-            children=[dcc.Graph(figure=bar_chart)],
+            style={
+                "display": "grid",
+                "gridTemplateColumns": "repeat(4, 1fr)",
+                "gap": "2rem",
+            },
+            children=[
+                html.Div(dcc.Graph(figure=bar_chart), style={"gridColumn": "span 3"})
+            ],
         ),
     ],
 )

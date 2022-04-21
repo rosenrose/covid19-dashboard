@@ -14,7 +14,7 @@ def make_table(df):
                         style={
                             "display": "grid",
                             "gridTemplateColumns": "repeat(4, 1fr)",
-                            "fontSize": "1.4rem",
+                            "fontSize": "1rem",
                             "fontWeight": "600",
                         },
                         children=[
