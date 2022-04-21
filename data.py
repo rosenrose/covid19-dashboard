@@ -26,6 +26,16 @@ def make_time_series_df(country):
     return final_df
 
 
+def make_totals_df(csv):
+    daily_dataframe = pd.read_csv(csv)
+    totals_df = daily_dataframe[["Confirmed", "Deaths", "Recovered"]].sum()
+    totals_df = totals_df.reset_index(name="count").rename(
+        columns={"index": "condition"}
+    )
+
+    return totals_df
+
+
 # daily_dataframe = pd.read_csv("data/daily_report_2021-03-06.csv")
 daily_dataframe = pd.read_csv("data/daily_report_2022-04-19.csv")
 
