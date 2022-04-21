@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def make_condition_df(condition, country="global"):
+def make_condition_df(condition, country):
     df = pd.read_csv(f"data/time_series_{condition}.csv")
 
     if country != "global":
@@ -13,7 +13,7 @@ def make_condition_df(condition, country="global"):
     return df
 
 
-def make_time_series_df(country="global"):
+def make_time_series_df(country):
     final_df = None
     for condition in conditions:
         condition_df = make_condition_df(condition, country)
@@ -26,8 +26,8 @@ def make_time_series_df(country="global"):
     return final_df
 
 
-daily_dataframe = pd.read_csv("data/daily_report_2021-03-06.csv")
-# daily_dataframe = pd.read_csv("data/daily_report_2022-04-19.csv")
+# daily_dataframe = pd.read_csv("data/daily_report_2021-03-06.csv")
+daily_dataframe = pd.read_csv("data/daily_report_2022-04-19.csv")
 
 totals_df = daily_dataframe[["Confirmed", "Deaths", "Recovered"]].sum()
 totals_df = totals_df.reset_index(name="count").rename(columns={"index": "condition"})
@@ -47,7 +47,7 @@ dropdown_options = ["global", *dropdown_options]
 
 conditions = ["confirmed", "deaths", "recovered"]
 
-global_df = make_time_series_df()
+global_df = make_time_series_df("global")
 
 if __name__ == "__main__":
     print(totals_df)
