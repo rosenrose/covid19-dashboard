@@ -2,13 +2,15 @@ from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
 import plotly.express as px
 import pandas as pd
-from data import countries_df, dropdown_options, make_time_series_df, make_totals_df
+from data import (
+    daily_reports,
+    countries_df,
+    dropdown_options,
+    make_time_series_df,
+    make_totals_df,
+    get_csv_from_report,
+)
 from builder import make_table
-import json
-import requests
-from datetime import datetime
-import base64
-import io
 
 # print(countries_df.values, dropdown_options)
 
@@ -42,26 +44,6 @@ covid_map = px.scatter_geo(
 covid_map.update_layout(margin={"l": 0, "r": 0, "t": 50, "b": 0})
 
 condition_colors = ["#e74c3c", "#8e44ad", "#27ae60"]
-
-remote_daily_reports = json.loads(
-    requests.get(
-        "https://api.github.com/repos/CSSEGISandData/COVID-19/git/trees/master?recursive=1"
-    ).text
-)
-daily_reports = [
-    tree
-    for tree in remote_daily_reports["tree"]
-    if tree["path"].startswith("csse_covid_19_data/csse_covid_19_daily_reports/")
-    and tree["path"].endswith(".csv")
-]
-
-for report in daily_reports:
-    date = report["path"].split("/")[-1].split(".")[0]
-    date = datetime.strptime(date, "%m-%d-%Y")
-    date = f"{date:%Y-%m-%d}"
-    report["date"] = date
-
-daily_reports.sort(key=lambda x: x["date"], reverse=True)
 
 
 def get_daily_report(date):
@@ -183,11 +165,10 @@ def update_time_series(value):
 @app.callback(Output("totals-graph", "figure"), [Input("daily-input", "value")])
 def update_totals(value):
     report = get_daily_report(value)
-    content = json.loads(requests.get(report["url"]).text)["content"]
-    blob = base64.b64decode(content)
+    csv = get_csv_from_report(report)
 
     bar_chart = px.bar(
-        make_totals_df(io.BytesIO(blob)),
+        make_totals_df(csv),
         title="Total Global Cases",
         x="condition",
         y="count",
