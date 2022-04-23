@@ -61,15 +61,30 @@ app.layout = html.Div(
     },
     children=[
         html.Header(
-            style={"paddingTop": "3rem", "marginBottom": "6rem"},
+            style={
+                "paddingTop": "3rem",
+                "marginBottom": "5rem",
+                "display": "flex",
+                "flexDirection": "column",
+                "alignItems": "center",
+                "gap": "1rem",
+            },
             children=[
                 html.H1(
                     "COVID-19 Dashboard",
                     style={
-                        "textAlign": "center",
                         "fontSize": "2.5rem",
                     },
-                )
+                ),
+                html.H6(
+                    [
+                        "from: ",
+                        html.A(
+                            "https://github.com/CSSEGISandData/COVID-19",
+                            href="https://github.com/CSSEGISandData/COVID-19",
+                        ),
+                    ]
+                ),
             ],
         ),
         html.Div(
@@ -184,5 +199,5 @@ def update_totals(value):
 
 server = app.server
 
-# if __name__ == "__main__":
-#     app.run_server(debug=True)
+if __name__ == "__main__":
+    app.run_server(debug=True)
