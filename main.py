@@ -95,7 +95,7 @@ app.layout = html.Div(
                 "marginBottom": "2rem",
             },
             children=[
-                html.Div(dcc.Graph(figure=covid_map)),
+                html.Div(dcc.Graph(figure=covid_map, style={"height": "100%"})),
                 html.Div(make_table(countries_df)),
             ],
         ),
