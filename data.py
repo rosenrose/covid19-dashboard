@@ -2,8 +2,8 @@ import pandas as pd
 import requests
 import json
 from datetime import datetime
-import base64
-import io
+from base64 import b64decode
+from io import BytesIO
 
 
 def make_condition_df(condition, country):
@@ -44,8 +44,8 @@ def make_totals_df(csv):
 
 def get_csv_from_report(report):
     content = json.loads(requests.get(report["url"]).text)["content"]
-    blob = base64.b64decode(content)
-    return io.BytesIO(blob)
+    blob = b64decode(content)
+    return BytesIO(blob)
 
 
 remote_daily_reports = json.loads(
