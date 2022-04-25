@@ -38,7 +38,8 @@ def make_table(df):
                             "borderTop": "1px solid white",
                         },
                         children=[
-                            html.Td(col, style={"textAlign": "center"}) for col in row
+                            html.Td(f"{col:,}", style={"textAlign": "center"})
+                            for col in row
                         ],
                     )
                     for row in df.values
