@@ -89,5 +89,7 @@ global_df = make_time_series_df("global")
 
 if __name__ == "__main__":
     print(countries_df)
+    # for col in countries_df.values[0]:
+    #     print(type(col))
     print(global_df)
     print(make_time_series_df("Korea, South"))
