@@ -38,7 +38,7 @@ def make_table(df):
                             "borderTop": "1px solid white",
                         },
                         children=[
-                            html.Td(f"{col:,}", style={"textAlign": "center"})
+                            html.Td(f"{int(col):,}", style={"textAlign": "center"})
                             for col in row
                         ],
                     )
