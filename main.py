@@ -1,3 +1,4 @@
+import os
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
 import plotly.express as px
@@ -199,4 +200,4 @@ def update_totals(value):
 server = app.server
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(port=os.environ.get("PORT", 8080))
